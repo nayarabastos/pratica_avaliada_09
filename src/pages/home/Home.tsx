@@ -30,7 +30,7 @@ function Home() {
 					</div>
 				</div>
 			</div>
-
+			<ListaProdutos />
 		</>
 	)
 }

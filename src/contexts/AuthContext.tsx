@@ -1,7 +1,8 @@
 import axios from "axios";
 import { createContext, useState, type ReactNode } from "react";
 import type UsuarioLogin from "../models/UsuarioLogin";
-import { login } from "../services/service";
+import { login } from "../services/Service";
+import { ToastAlerta } from "../utils/ToastAlerta";
 
 // Definir os Estados e Funções disponibilizadas pela Context
 interface AuthContextProps {
@@ -30,6 +31,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 		usuario: "",
 		senha: "",
 		foto: "",
+		dataNascimento: "",
 		token: "",
 	})
 
@@ -42,10 +44,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 		try {
 			await login(`/usuarios/logar`, usuarioLogin, setUsuario)
-			alert("Usuário Autenticado com sucesso!")
+			ToastAlerta("Usuário autenticado com sucesso!", "success")
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
-				alert(`Erro ao autenticar o usuário (${error.response?.status})`)
+				ToastAlerta(`Erro ao autenticar o usuário (${error.response?.status})`, "error")
 				return
 			}
 		} finally {
@@ -61,6 +63,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 			usuario: "",
 			senha: "",
 			foto: "",
+			dataNascimento: "",
 			token: "",
 		})
 	}

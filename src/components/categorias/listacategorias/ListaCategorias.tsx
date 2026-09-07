@@ -2,10 +2,11 @@ import axios from "axios";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { buscar } from "../../../services/service";
+import { buscar } from "../../../services/Service";
 import CardCategoria from "../cardcategorias/CardCategoria";
 import type Categoria from "../../../models/Categoria";
 import { SyncLoader } from "react-spinners";
+import { ToastAlerta } from "../../../utils/ToastAlerta";
 
 function ListaCategorias() {
 
@@ -26,7 +27,7 @@ function ListaCategorias() {
 	// useEffect para monitorar o token
 	useEffect(() => {
 		if (token === "") {
-			alert("Você precisa estar logado!")
+			ToastAlerta("Você precisa estar logado!", "info")
 			navigate("/")
 		}
 	}, [token])
@@ -46,7 +47,7 @@ function ListaCategorias() {
 			})
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
-				alert(`Erro ao buscar as categorias (${error.response?.status})`)
+				ToastAlerta(`Erro ao buscar as categorias (${error.response?.status})`, "error")
 				if (error.response?.status === 401) {
 					handleLogout()
 				}

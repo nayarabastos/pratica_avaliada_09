@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import Cart from "./components/carrinho/cart/Cart";
 import DeletarCategoria from "./components/categorias/deletarcategorias/DeletarCategoria";
 import FormCategoria from "./components/categorias/formcategoria/FormCategoria";
@@ -14,10 +15,12 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Perfil from "./pages/perfil/Perfil";
 import { AuthProvider } from "./contexts/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
 
 function App() {
 	return (
 		<AuthProvider>
+			<CartProvider>
 			<BrowserRouter>
 				<Navbar />
 				<div className="min-h-[80vh]">
@@ -29,10 +32,18 @@ function App() {
 						<Route path="/cadastrarcategoria" element={<FormCategoria />} />
 						<Route path="/editarcategoria/:id" element={<FormCategoria />} />
 						<Route path="/deletarcategoria/:id" element={<DeletarCategoria />} />
+						<Route path="/produtos" element={<ListarProdutos />} />
+						<Route path="/cadastrarproduto" element={<FormProduto />} />
+						<Route path="/editarproduto/:id" element={<FormProduto />} />
+						<Route path="/deletarproduto/:id" element={<DeletarProduto />} />
+						<Route path="/carrinho" element={<Cart />} />
+						<Route path="/perfil" element={<Perfil />} />
 					</Routes>
 				</div>
 				<Footer />
+				<ToastContainer position="top-right" autoClose={3000} />
 			</BrowserRouter>
+			</CartProvider>
 		</AuthProvider>
 	)
 }

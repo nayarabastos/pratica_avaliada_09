@@ -2,7 +2,8 @@ import axios from "axios";
 import { useState, useEffect, type SyntheticEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import type Usuario from "../../models/Usuario";
-import { cadastrarUsuario } from "../../services/service";
+import { cadastrarUsuario } from "../../services/Service";
+import { ToastAlerta } from "../../utils/ToastAlerta";
 import { ClipLoader } from "react-spinners";
 
 function Cadastro() {
@@ -22,6 +23,7 @@ function Cadastro() {
 		usuario: '',
 		senha: '',
 		foto: '',
+		dataNascimento: '',
 	})
 
 	// Estado responsável por guardar a senha digitada no campo confirmar senha
@@ -48,6 +50,18 @@ function Cadastro() {
 		setConfirmarSenha(e.target.value);
 	}
 
+	function temIdadeMinima(dataNascimento: string) {
+		const nascimento = new Date(`${dataNascimento}T00:00:00`)
+		const hoje = new Date()
+		const dataLimite = new Date(
+			hoje.getFullYear() - 18,
+			hoje.getMonth(),
+			hoje.getDate(),
+		)
+
+		return nascimento <= dataLimite
+	}
+
 
 	// Função responsável por enviar uma requisição do tipo POST
 	// com oa dados do usuário (estado usuario)
@@ -58,20 +72,25 @@ function Cadastro() {
 
 		// Validção da senha digitada
 		if (confirmarSenha !== usuario.senha || usuario.senha.length < 8) {
-			alert("Senhas não conferem e/ou não possuem pelo menos 8 caracteres");
+			ToastAlerta("Senhas não conferem e/ou não possuem pelo menos 8 caracteres", "warning");
 			setUsuario({ ...usuario, senha: '' });
 			setConfirmarSenha('');
 			return;
+		}
+
+		if (!usuario.dataNascimento || !temIdadeMinima(usuario.dataNascimento)) {
+			ToastAlerta("É necessário ter pelo menos 18 anos para se cadastrar.", "warning")
+			return
 		}
 
 		setIsLoading(true);
 
 		try {
 			await cadastrarUsuario(`/usuarios/cadastrar`, usuario, setUsuario);
-			alert("Usuário cadastrado com sucesso!");
+			ToastAlerta("Usuário cadastrado com sucesso!", "success");
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
-				alert(`Erro ao cadastrar o usuário (${error.response?.status})`)
+				ToastAlerta(`Erro ao cadastrar o usuário (${error.response?.status})`, "error")
 				return;
 			}
 		} finally {
@@ -152,6 +171,8 @@ function Cadastro() {
 							name="dataNascimento"
 							className="border-2 border-slate-700 rounded p-2 w-full"
 							required
+							value={usuario.dataNascimento}
+							onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
 						/>
 					</div>
 

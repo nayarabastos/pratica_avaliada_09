@@ -2,9 +2,10 @@ import axios from "axios";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { buscar, deletar } from "../../../services/service";
+import { buscar, deletar } from "../../../services/Service";
 import type Categoria from "../../../models/Categoria";
 import { ClipLoader } from "react-spinners";
+import { ToastAlerta } from "../../../utils/ToastAlerta";
 
 function DeletarCategoria() {
 
@@ -33,7 +34,7 @@ function DeletarCategoria() {
             })
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                alert(`Erro ao buscar a categoria (${error.response?.status})`)
+                ToastAlerta(`Erro ao buscar a categoria (${error.response?.status})`, "error")
                 if (error.response?.status === 401) {
                     handleLogout()
                 }
@@ -52,7 +53,7 @@ function DeletarCategoria() {
     // useEffect para monitorar o token
     useEffect(() => {
         if (token === '') {
-            alert("Você precisa estar logado!");
+            ToastAlerta("Você precisa estar logado!", "info");
             navigate('/');
         }
     }, [token])
@@ -68,11 +69,11 @@ function DeletarCategoria() {
                 headers: { Authorization: token }
             })
 
-            alert('Categoria deletada com sucessso!')
+            ToastAlerta("Categoria deletada com sucesso!", "success")
 
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                alert(`Erro ao deletar categoria (${error.response?.status})`);
+                ToastAlerta(`Erro ao deletar categoria (${error.response?.status})`, "error");
                 if (error.response?.status === 401) {
                     handleLogout();
                 }

@@ -3,16 +3,19 @@ import { Link, useNavigate } from "react-router-dom"
 import SearchForm from "./SearchForm"
 import { useContext } from "react"
 import { AuthContext } from "../../contexts/AuthContext"
+import { CartContext } from "../../contexts/CartContext"
+import { ToastAlerta } from "../../utils/ToastAlerta"
 
 function Navbar() {
 	
 	const navigate = useNavigate()
 
 	const { handleLogout } = useContext(AuthContext)
+	const { quantidadeItems } = useContext(CartContext)
 
 	function logout() {
 		handleLogout()
-		alert("Usuário desconectado com sucesso!")
+		ToastAlerta("Usuário desconectado com sucesso!", "success")
 		navigate("/")
 	}
 	
@@ -61,12 +64,13 @@ function Navbar() {
 						>
 							<ShoppingCartIcon size={32} weight="bold" />
 							<span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-								0
+								{quantidadeItems}
 							</span>
 						</Link>
 						<button
 							aria-label="Sair"
 							className="hover:opacity-80 transition-opacity cursor-pointer"
+							onClick={logout}
 						>
 							<SignOutIcon size={32} weight="bold" />
 						</button>
@@ -121,13 +125,14 @@ function Navbar() {
 					<span className="relative flex items-center">
 						<ShoppingCartIcon size={24} weight="bold" />
 						<span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-							0
+							{quantidadeItems}
 						</span>
 					</span>
 					Carrinho
 				</Link>
 				<button
 					className="flex items-center gap-2 hover:underline text-left cursor-pointer"
+					onClick={logout}
 				>
 					<SignOutIcon size={24} weight="bold" />
 					Sair

@@ -2,9 +2,10 @@ import axios from "axios"
 import { useState, useContext, useEffect, type ChangeEvent, type SyntheticEvent } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { AuthContext } from "../../../contexts/AuthContext"
-import { buscar, atualizar, cadastrar } from "../../../services/service"
+import { buscar, atualizar, cadastrar } from "../../../services/Service"
 import type Categoria from "../../../models/Categoria"
 import { ClipLoader } from "react-spinners"
+import { ToastAlerta } from "../../../utils/ToastAlerta"
 
 function FormCategoria() {
 
@@ -33,7 +34,7 @@ function FormCategoria() {
       })
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        alert(`Erro ao buscar categoria (${error.response?.status})`)
+        ToastAlerta(`Erro ao buscar categoria (${error.response?.status})`, "error")
         if (error.response?.status === 401) {
           handleLogout()
         }
@@ -51,7 +52,7 @@ function FormCategoria() {
   // useEffect para monitorar o token
   useEffect(() => {
     if (token === "") {
-      alert("Você precisa estar logado!")
+      ToastAlerta("Você precisa estar logado!", "info")
       navigate("/")
     }
   }, [token])
@@ -77,10 +78,10 @@ function FormCategoria() {
         await atualizar(`/categorias`, categoria, setCategoria, {
           headers: { Authorization: token },
         })
-        alert("Categoria atualizada com sucesso!")
+        ToastAlerta("Categoria atualizada com sucesso!", "success")
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          alert(`Erro ao atualizar a Categoria (${error.response?.status})`)
+          ToastAlerta(`Erro ao atualizar a Categoria (${error.response?.status})`, "error")
           if (error.response?.status === 401) {
             handleLogout()
           }
@@ -94,10 +95,10 @@ function FormCategoria() {
         await cadastrar(`/categorias`, categoria, setCategoria, {
           headers: { Authorization: token },
         })
-        alert("Categoria cadastrada com sucesso!")
+        ToastAlerta("Categoria cadastrada com sucesso!", "success")
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          alert(`Erro ao cadastrar categoria (${error.response?.status})`)
+          ToastAlerta(`Erro ao cadastrar categoria (${error.response?.status})`, "error")
           if (error.response?.status === 401) {
             handleLogout()
           }
